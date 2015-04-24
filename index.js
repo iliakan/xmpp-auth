@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// use level: trace for debug only (plaintext passwords in logs!)
+
 // protocol @see https://www.ejabberd.im/files/doc/dev.html#htoc9
 var async = require('async');
 var bunyan = require('bunyan');
@@ -7,7 +9,7 @@ var config = require('./config');
 var request = require('request');
 
 var log = bunyan.createLogger({
-  level:   'debug',
+  level:   'info', // trace is dangerous (passwords in logs)!
   name:    "auth",
   streams: [{
     level: 'trace',
@@ -17,12 +19,12 @@ var log = bunyan.createLogger({
 });
 
 process.stdin.on('readable', function read() {
-  log.info("readable");
+  log.trace("readable");
   var offset = 0;
   var buf = process.stdin.read();
   if (!buf) return;
 
-  log.info("buffer", buf, buf.toString());
+  log.trace("buffer", buf, buf.toString());
 
   while (true) {
     // offset is the current message start
@@ -33,7 +35,7 @@ process.stdin.on('readable', function read() {
 
     var messageLength = buf.readUInt16BE(offset);
 
-    log.info("length", messageLength);
+    log.trace("length", messageLength);
 
     if (offset + 2 + messageLength < buf.length) {
       process.stdin.unshift(buf.slice(offset));
@@ -46,7 +48,7 @@ process.stdin.on('readable', function read() {
     offset += messageLength;
 
     message = message.toString();
-    log.info("message", message);
+    log.trace("message", message);
 
     message = message.split(':');
 
@@ -72,7 +74,7 @@ process.stdin.on('readable', function read() {
 
 
 var messageQueue = async.queue(function(message, callback) {
-  log.debug("send to service", message);
+  log.info("send to service", message.command, message.user);
   request.post({
     url:  config.authServiceUrl,
     form: message
