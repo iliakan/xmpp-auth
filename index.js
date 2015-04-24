@@ -44,7 +44,8 @@ process.stdin.on('readable', function read() {
     var message = buf.slice(offset, messageLength + offset);
     offset += messageLength;
 
-    log.info("message", message.toString());
+    message = message.toString();
+    log.info("message", message);
 
     message = message.split(':');
 
