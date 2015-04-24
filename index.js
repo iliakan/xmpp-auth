@@ -11,7 +11,7 @@ var request = require('request');
 var log = bunyan.createLogger({
   name:    "auth",
   streams: [{
-    level: 'info',
+    level: 'info', // trace is dangerous (plaintext passwords in logs)
     path:  config.logPath
   }]
 
@@ -80,7 +80,7 @@ var messageQueue = async.queue(function(message, callback) {
   }, function(err, httpResponse, body) {
     if (err) throw(err);
 
-    log.debug("receive from service", body);
+    log.info("receive from service", body);
 
     switch(body) {
     case "1":
