@@ -72,11 +72,14 @@ process.stdin.on('readable', function read() {
 
 
 var messageQueue = async.queue(function(message, callback) {
+  log.debug("send to service", message);
   request.post({
     url:  config.authServiceUrl,
     form: message
   }, function(err, httpResponse, body) {
     if (err) throw(err);
+
+    log.debug("receive from service", body);
 
     switch(body) {
     case "1":
