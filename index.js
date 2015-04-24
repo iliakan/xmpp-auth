@@ -9,10 +9,9 @@ var config = require('./config');
 var request = require('request');
 
 var log = bunyan.createLogger({
-  level:   'info', // trace is dangerous (passwords in logs)!
   name:    "auth",
   streams: [{
-    level: 'trace',
+    level: 'info',
     path:  config.logPath
   }]
 
