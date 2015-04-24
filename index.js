@@ -4,13 +4,14 @@
 var async = require('async');
 var bunyan = require('bunyan');
 var config = require('./config');
+var request = require('request');
 
 var log = bunyan.createLogger({
   level:   'debug',
   name:    "auth",
   streams: [{
     level: 'trace',
-    path:  '/var/log/ejabberd/xmpp-auth.log'
+    path:  config.logPath
   }]
 
 });
